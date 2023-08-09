@@ -1,6 +1,7 @@
 # Node_Layer_Network
 ![2](https://github.com/dinleo/Node_Layer_Network/assets/81561645/11e17dcd-1fc2-42f2-9663-05fa1e10f759)
-https://leo-dev.notion.site/b4ad787c62b949b99d3a5b3f2fb4e23b?v=7c6df0ad0b4d40c9b43ac5654dbb15cc&pvs=4
+- 블로그
+  - https://leo-dev.notion.site/b4ad787c62b949b99d3a5b3f2fb4e23b?v=7c6df0ad0b4d40c9b43ac5654dbb15cc&pvs=4
 - 개요
   - Dot, Add 등 기본적인 계산그래프의 Node 를 구현하고
   - Node 를 이용해 Affine 등 Layer 를 구현하고
