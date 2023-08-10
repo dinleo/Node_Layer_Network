@@ -125,11 +125,15 @@ class CrossEntropy:
 
 
 class SoftmaxWithLoss:
-    def __init__(self):
+    def __init__(self, back_eta=True):
         self.s = Softmax()
         self.c = CrossEntropy()
         self.y = None
         self.t = None
+        # 순전파는 Log(x+eta) 동일, 역전파시
+        # True -> 1/(x+eta)   (=정석공식)
+        # False -> 1/(x)     (=Textbook)
+        self.back_eta = back_eta
 
     def forward(self, x, t):
         y = self.s.forward(x)
@@ -140,10 +144,12 @@ class SoftmaxWithLoss:
         return o
 
     def backward(self, y):
-        dx = self.c.backward(1)
-        dx = self.s.backward(dx)
-        # 빠른 계산을 위한 공식 적용, 단 Log Node 에서 self.x = x + eta 가 아닌  self.x = x 로 적용됨 주의
-        # dx = (self.y - self.t) / self.t.shape[0]
+        if self.back_eta:
+            dx = self.c.backward(1)
+            dx = self.s.backward(dx)
+        else:
+            dx = (self.y - self.t) / self.t.shape[0]
+
         return dx
 
 
