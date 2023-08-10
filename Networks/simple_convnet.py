@@ -20,7 +20,7 @@ class SimpleConvNet:
 
     def __init__(self, input_dim=(1, 28, 28),
                  conv_param={'filter_num': 30, 'filter_size': 5, 'pad': 0, 'stride': 1},
-                 hidden_size=100, output_size=10, weight_init_std=0.01):
+                 hidden_size=100, output_size=10, weight_init_std=0.01, dropout_ration=0.5):
         filter_num = conv_param['filter_num']
         filter_size = conv_param['filter_size']
         filter_pad = conv_param['pad']
@@ -49,25 +49,31 @@ class SimpleConvNet:
         self.layers['Pool1'] = Pooling(pool_h=2, pool_w=2, stride=2)
         self.layers['Affine1'] = Affine(self.params['W2'], self.params['b2'])
         self.layers['Relu2'] = Relu()
+        self.layers['Dropout1'] = Dropout(dropout_ration)
         self.layers['Affine2'] = Affine(self.params['W3'], self.params['b3'])
+        self.layers['Dropout2'] = Dropout(dropout_ration)
 
         self.last_layer = SoftmaxWithLoss()
 
-    def predict(self, x):
+    def predict(self, x, train_flg=False):
         for layer in self.layers.values():
-            x = layer.forward(x)
+            if isinstance(layer, Dropout):
+                x = layer.forward(x, train_flg)
+            else:
+                x = layer.forward(x)
 
         return x
 
-    def loss(self, x, t):
+    def loss(self, x, t, train_flg=False):
         """손실 함수를 구한다.
 
         Parameters
         ----------
+        train_flg : 학습시 True, 추론시 False
         x : 입력 데이터
         t : 정답 레이블
         """
-        y = self.predict(x)
+        y = self.predict(x, train_flg)
         return self.last_layer.forward(y, t)
 
     def accuracy(self, x, t, batch_size=100):
@@ -77,14 +83,14 @@ class SimpleConvNet:
         for i in range(int(x.shape[0] / batch_size)):
             tx = x[i * batch_size:(i + 1) * batch_size]
             tt = t[i * batch_size:(i + 1) * batch_size]
-            y = self.predict(tx)
+            y = self.predict(tx, train_flg=False)
             y = np.argmax(y, axis=1)
             acc += np.sum(y == tt)
 
         return acc / x.shape[0]
 
     def acc_and_loss(self, x, t):
-        y = self.predict(x)
+        y = self.predict(x, train_flg=False)
 
         loss = self.last_layer.forward(y, t)
 
@@ -111,7 +117,7 @@ class SimpleConvNet:
             grads['b1']、grads['b2']、... 각 층의 편향
         """
         # forward
-        self.loss(x, t)
+        self.loss(x, t, train_flg=True)
 
         # backward
         dout = 1
