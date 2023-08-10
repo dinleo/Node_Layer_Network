@@ -19,7 +19,7 @@ class DeepConvNet:
                  conv_param_4={'filter_num': 32, 'filter_size': 3, 'pad': 2, 'stride': 1},
                  conv_param_5={'filter_num': 64, 'filter_size': 3, 'pad': 1, 'stride': 1},
                  conv_param_6={'filter_num': 64, 'filter_size': 3, 'pad': 1, 'stride': 1},
-                 hidden_size=50, output_size=10, dropout_ration=0, back_eta=True):
+                 hidden_size=50, output_size=10, dropout_ration=0.5, back_eta=True):
         # 가중치 초기화===========
         # 각 층의 뉴런 하나당 앞 층의 몇 개 뉴런과 연결되는가（TODO: 자동 계산되게 바꿀 것）
         pre_node_nums = np.array(
