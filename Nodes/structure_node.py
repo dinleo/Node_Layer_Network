@@ -1,4 +1,4 @@
-import numpy as np
+import cupy as np
 
 class Reshape:
     def __init__(self, x_node, shape):

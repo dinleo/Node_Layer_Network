@@ -1,4 +1,4 @@
-import numpy as np
+import cupy as np
 
 class TwoNode:
     def __init__(self, a_node, b_node):
