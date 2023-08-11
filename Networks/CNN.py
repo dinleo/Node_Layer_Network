@@ -8,11 +8,13 @@ from Layers.layers import *
 
 
 class CNN:
-    """CNN 신경망
+    """Convolution 신경망
     기본설정:
         Batch Norm 사용 안 함
         DropOut 사용 안 함
-    Layer:
+    모델종류:
+        CVD, VGG11, VGG16
+    CVD:
         1 conv - batch - relu -
         2 conv - batch - relu - pooling
         3 conv - batch - relu -
@@ -21,30 +23,117 @@ class CNN:
         6 conv - batch - relu - pooling
         7 affine - relu - dropout
         8 affine - softmax
+    VGG11:
+        1 conv - batch - relu - pooling
+        2 conv - batch - relu - pooling
+        3 conv - batch - relu -
+        4 conv - batch - relu - pooling
+        5 conv - batch - relu -
+        6 conv - batch - relu - pooling
+        7 conv - batch - relu -
+        8 conv - batch - relu - pooling
+        9 affine - relu - dropout
+        10 affine - relu - dropout
+        11 affine - softmax
+    VGG16:
+        1 conv - batch - relu -
+        2 conv - batch - relu - pooling
+        3 conv - batch - relu -
+        4 conv - batch - relu - pooling
+        5 conv - batch - relu -
+        6 conv - batch - relu -
+        7 conv - batch - relu - pooling
+        8 conv - batch - relu -
+        9 conv - batch - relu -
+        10 conv - batch - relu - pooling
+        11 conv - batch - relu -
+        12 conv - batch - relu -
+        13 conv - batch - relu - pooling
+        14 affine - relu - dropout
+        15 affine - relu - dropout
+        16 affine - softmax
     """
 
-    def __init__(self, input_dim=(1, 28, 28), output_size=10, dropout_ratio=0, use_batchnorm=False, back_eta=True):
+    def __init__(self, input_dim=(1, 28, 28), output_size=10, dropout_ratio=0, model='VGG16', init_fn=64, act='relu',
+                 use_batchnorm=False,
+                 back_eta=True):
         # 가중치 초기화===========
-        param_size = [
-            {'filter_num': 16, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 16, 28, 28
-            {'filter_num': 16, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 16, 28, 28
-            {'pooling': 2, 'stride': 2},  # 16, 14, 14
-            {'filter_num': 32, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 32, 14, 14
-            {'filter_num': 32, 'filter_size': 3, 'pad': 2, 'stride': 1},  # 32, 16, 16
-            {'pooling': 2, 'stride': 2},  # 32, 8, 8
-            {'filter_num': 64, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 64, 8, 8
-            {'filter_num': 64, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 64, 8, 8
-            {'pooling': 2, 'stride': 2},  # 64, 4, 4
-            {'flatten': True},  # pre_channel_num 용. 실제 Flatten 은 Affine 에 구현 되어있음
-            # dense
-            {'unit_num': 50},
-            {'unit_num': output_size}
-        ]
+        param_size = []
+        if model == 'CVD':
+            init_fn = init_fn//4
+            param_size = [
+                {'filter_num': init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 16, 28, 28
+                {'filter_num': init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 16, 28, 28
+                {'pooling': 2, 'stride': 2},  # 16, 14, 14
+                {'filter_num': 2*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 32, 14, 14
+                {'filter_num': 2*init_fn, 'filter_size': 3, 'pad': 2, 'stride': 1},  # 32, 16, 16
+                {'pooling': 2, 'stride': 2},  # 32, 8, 8
+                {'filter_num': 4*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 64, 8, 8
+                {'filter_num': 4*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 64, 8, 8
+                {'pooling': 2, 'stride': 2},  # 64, 4, 4
+                {'flatten': True},  # pre_channel_num 용. 실제 Flatten 은 Affine 에 구현 되어있음
+                # dense
+                {'unit_num': 50},
+                {'unit_num': output_size}
+            ]
+        elif model == 'VGG11':
+            param_size = [
+                {'filter_num': init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 64, 28, 28
+                {'pooling': 2, 'stride': 2},  # 64, 14, 14
+                {'filter_num': 2*init_fn, 'filter_size': 3, 'pad': 2, 'stride': 1},  # 128, 16, 16
+                {'pooling': 2, 'stride': 2},  # 128, 8, 8
+                {'filter_num': 4*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 256, 8, 8
+                {'filter_num': 4*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},
+                {'pooling': 2, 'stride': 2},  # 128, 4, 4
+                {'filter_num': 8*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 512, 4, 4
+                {'filter_num': 8*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},
+                {'pooling': 2, 'stride': 2},  # 256, 2, 2
+                {'filter_num': 8*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 512, 2, 2
+                {'filter_num': 8*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},
+                {'pooling': 2, 'stride': 2},  # 512, 1, 1
+                {'flatten': True},  # pre_channel_num 용. 실제 Flatten 은 Affine 에 구현 되어있음
+                # dense
+                {'unit_num': init_fn*init_fn},
+                {'unit_num': 4*init_fn},
+                {'unit_num': output_size}
+            ]
+        elif model == 'VGG16':
+            param_size = [
+                {'filter_num': init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 64, 28, 28
+                {'filter_num': init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 64, 28, 28
+                {'pooling': 2, 'stride': 2},  # 64, 14, 14
+                {'filter_num': 2*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 128, 14, 14
+                {'filter_num': 2*init_fn, 'filter_size': 3, 'pad': 2, 'stride': 1},  # 128, 16, 16
+                {'pooling': 2, 'stride': 2},  # 128, 8, 8
+                {'filter_num': 4*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 256, 8, 8
+                {'filter_num': 4*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},
+                {'filter_num': 4*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},
+                {'pooling': 2, 'stride': 2},  # 128, 4, 4
+                {'filter_num': 8*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 512, 4, 4
+                {'filter_num': 8*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},
+                {'filter_num': 8*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},
+                {'pooling': 2, 'stride': 2},  # 256, 2, 2
+                {'filter_num': 8*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 512, 2, 2
+                {'filter_num': 8*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},
+                {'filter_num': 8*init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},
+                {'pooling': 2, 'stride': 2},  # 512, 1, 1
+                {'flatten': True},  # pre_channel_num 용. 실제 Flatten 은 Affine 에 구현 되어있음
+                # dense
+                {'unit_num': init_fn*init_fn},
+                {'unit_num': 4*init_fn},
+                {'unit_num': output_size}
+            ]
+        else:
+            assert 'No Model'
 
         # 가중치 초기화
         height, width = input_dim[1], input_dim[2]
         pre_channel_num = input_dim[0]
         self.params = {}
+        std = 2.0
+        if act == 'sigmoid':
+            std = 1.0
+
         i = 1
         for _, ps in enumerate(param_size):
             if 'filter_num' in ps:  # Convolutional Layer 초기화
@@ -52,7 +141,7 @@ class CNN:
                 filter_num = ps['filter_num']
                 pad = ps['pad']
                 stride = ps['stride']
-                scale = np.sqrt(2.0 / (pre_channel_num * filter_size * filter_size))  # ReLU를 사용할 때의 권장 초깃값
+                scale = np.sqrt(std / (pre_channel_num * filter_size * filter_size))  # ReLU를 사용할 때의 권장 초깃값
 
                 self.params['W' + str(i)] = scale * np.random.randn(filter_num, pre_channel_num, filter_size,
                                                                     filter_size)
@@ -61,8 +150,8 @@ class CNN:
                 height = 1 + (height + 2 * pad - filter_size) // stride
                 width = 1 + (width + 2 * pad - filter_size) // stride
                 if use_batchnorm:
-                    self.params['gamma' + str(i)] = np.ones([filter_num, height, width])
-                    self.params['beta' + str(i)] = np.zeros([filter_num, height, width])
+                    self.params['gamma' + str(i)] = np.ones((filter_num, height, width))
+                    self.params['beta' + str(i)] = np.zeros((filter_num, height, width))
                 pre_channel_num = filter_num
                 i += 1
             elif 'pooling' in ps:  # Max Pooling Layer 크기 변경
@@ -71,7 +160,7 @@ class CNN:
             elif 'flatten' in ps:
                 pre_channel_num = pre_channel_num * height * width
             elif 'unit_num' in ps:  # dense Layer 초기화
-                scale = np.sqrt(2.0 / pre_channel_num)
+                scale = np.sqrt(std / pre_channel_num)
                 self.params['W' + str(i)] = scale * np.random.randn(pre_channel_num, ps['unit_num'])
                 self.params['b' + str(i)] = np.zeros(ps['unit_num'])
                 pre_channel_num = ps['unit_num']
@@ -92,7 +181,10 @@ class CNN:
                     self.layers.append(BatchNormalization(gamma=gamma, beta=beta))
 
                 # Activation Layer
-                self.layers.append(Relu())
+                if act == 'relu':
+                    self.layers.append(Relu())
+                else:
+                    self.layers.append(Sigmoid())
 
                 i += 1
             elif 'pooling' in ps:
@@ -108,7 +200,10 @@ class CNN:
                     break
 
                 # Activation Layer
-                self.layers.append(Relu())
+                if act == 'relu':
+                    self.layers.append(Relu())
+                else:
+                    self.layers.append(Sigmoid())
 
                 # Dropout Layer
                 if dropout_ratio != 0:
@@ -139,7 +234,7 @@ class CNN:
         yp = np.argmax(y, axis=1)
         acc = np.sum(yp == t) / float(x.shape[0])
 
-        return acc
+        return acc / x.shape[0]
 
     def acc_and_loss(self, x, t):
         if x.shape[0] != t.shape[0]:
