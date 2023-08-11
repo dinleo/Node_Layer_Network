@@ -2,6 +2,7 @@ import pickle
 
 import os
 import sys
+
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from Layers.layers import *
 
@@ -73,7 +74,6 @@ class DeepConvNet:
         self.layers.append(Dropout(dropout_ratio))
         self.layers.append(Affine(self.params['W8'], self.params['b8']))
         self.layers.append(Dropout(dropout_ratio))
-
         self.last_layer = SoftmaxWithLoss(back_eta=back_eta)
 
     def predict(self, x, train_flg=False):

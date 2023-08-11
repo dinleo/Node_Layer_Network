@@ -272,8 +272,10 @@ class BatchNormalization(Layer):
         self.rep_node2 = Repeat(self.recip_node, axis=0, r=None)
 
         self.xn_node = Mul(self.xc_node, self.rep_node2)
-        self.r_node = Repeat(self.get_r, axis=0, r=None)
-        self.b_node = Repeat(self.get_b, axis=0, r=None)
+        self.r_flt_node = Reshape(self.get_r, [-1])
+        self.b_flt_node = Reshape(self.get_b, [-1])
+        self.r_node = Repeat(self.r_flt_node, axis=0, r=None)
+        self.b_node = Repeat(self.b_flt_node, axis=0, r=None)
         self.r_xn_node = Mul(self.xn_node, self.r_node)
         self.last_node = Add(self.r_xn_node, self.b_node)
 
