@@ -1,6 +1,10 @@
 import pickle
 from collections import OrderedDict
-from Layers.layers import *
+
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from ..Layers.layers import *
 
 class SimpleConvNet:
     """단순한 합성곱 신경망

@@ -1,6 +1,9 @@
 from collections import OrderedDict
-from Layers.layers import *
-import numpy as np
+
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from ..Layers.layers import *
 
 
 class MultiLayerNetExtend:
