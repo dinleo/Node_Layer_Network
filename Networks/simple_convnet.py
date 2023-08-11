@@ -4,7 +4,7 @@ from collections import OrderedDict
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-from ..Layers.layers import *
+from Layers.layers import *
 
 class SimpleConvNet:
     """단순한 합성곱 신경망
@@ -24,7 +24,7 @@ class SimpleConvNet:
 
     def __init__(self, input_dim=(1, 28, 28),
                  conv_param={'filter_num': 30, 'filter_size': 5, 'pad': 0, 'stride': 1},
-                 hidden_size=100, output_size=10, weight_init_std=0.01, dropout_ration=0.5):
+                 hidden_size=100, output_size=10, weight_init_std=0.01, dropout_ratio=0.5):
         filter_num = conv_param['filter_num']
         filter_size = conv_param['filter_size']
         filter_pad = conv_param['pad']
@@ -53,9 +53,9 @@ class SimpleConvNet:
         self.layers['Pool1'] = Pooling(pool_h=2, pool_w=2, stride=2)
         self.layers['Affine1'] = Affine(self.params['W2'], self.params['b2'])
         self.layers['Relu2'] = Relu()
-        self.layers['Dropout1'] = Dropout(dropout_ration)
+        self.layers['Dropout1'] = Dropout(dropout_ratio)
         self.layers['Affine2'] = Affine(self.params['W3'], self.params['b3'])
-        self.layers['Dropout2'] = Dropout(dropout_ration)
+        self.layers['Dropout2'] = Dropout(dropout_ratio)
 
         self.last_layer = SoftmaxWithLoss()
 

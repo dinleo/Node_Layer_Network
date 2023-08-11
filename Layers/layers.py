@@ -1,8 +1,8 @@
-from ..Nodes.one_node import *
-from ..Nodes.two_node import *
-from ..Nodes.structure_node import *
-from ..Nodes.axis_node import *
-from ..Nodes.functions import *
+from Nodes.one_node import *
+from Nodes.two_node import *
+from Nodes.structure_node import *
+from Nodes.axis_node import *
+from Nodes.functions import *
 
 
 class Layer:
