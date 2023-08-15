@@ -14,9 +14,14 @@
 - 구조
   - Node 밑 Layer 의 구성은 아래 PPT 에 나와 있습니다.
   - [README.pdf](https://github.com/dinleo/Node_Layer_Network/files/12300985/README.pdf)
+- 업데이트
   - PPT 에 없는 구성 추가
     - Layer 
       - Batch Norm Layer 추가
       - DropOut Layer 추가
     - Node
       - Power 추가
+  - CNN 추가
+    - 기존 deep_convnet 과 동일, Layer 유연하게 변경할 수 있도록 코드 변경
+  - VGG16 추가
+  - Cupy 사용

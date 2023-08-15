@@ -1,5 +1,5 @@
 # coding: utf-8
-import cupy as np
+import numpy as np
 
 
 def smooth_curve(x):
