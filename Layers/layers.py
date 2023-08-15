@@ -95,10 +95,10 @@ class CrossEntropy:
         self.dx = None
         self.get_t = GetValue(None)
 
-        self.mul_node = Mul(self.get_t, self.get_x)
+        self.log_node = Log(self.get_x, 1e-7)
+        self.mul_node = Mul(self.get_t, self.log_node)
         self.sum_node = Sum(self.mul_node, 1)
-        self.log_node = Log(self.sum_node, 1e-7)
-        self.neg_node = MulConst(self.log_node, -1)
+        self.neg_node = MulConst(self.sum_node, -1)
         self.last_node = Mean(self.neg_node, 0)
 
     def forward(self, x, t):
