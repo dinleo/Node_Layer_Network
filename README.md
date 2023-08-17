@@ -8,9 +8,11 @@
     - → Network 를 용해 학습 및 추론, 테스트
 
 ### 참고
-
-- https://github.com/WegraLee/deep-learning-from-scratch
-- '밑바닥부터 시작하는 딥러닝' 교재를 참고해 구현 했습니다.
+- 딥러닝 학습 블로그
+    - [딥러닝](https://www.notion.so/b4ad787c62b949b99d3a5b3f2fb4e23b?pvs=21)
+- 교재코드
+    - https://github.com/WegraLee/deep-learning-from-scratch
+    - '밑바닥부터 시작하는 딥러닝' 교재를 참고해 구현 했습니다.
 - 교재와의 차이점
     - 교재
         - Node 가 없습니다.
