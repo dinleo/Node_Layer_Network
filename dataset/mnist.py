@@ -7,7 +7,13 @@ import os.path
 import gzip
 import pickle
 import os
-import cupy as np
+try:
+    import cupy as np
+    py = 'cupy'
+except ImportError:
+    import numpy as np
+    py = 'numpy'
+
 
 
 url_base = 'http://yann.lecun.com/exdb/mnist/'
@@ -19,7 +25,7 @@ key_file = {
 }
 
 dataset_dir = os.path.dirname(os.path.abspath(__file__))
-save_file = dataset_dir + "/mnist.pkl"
+save_file = dataset_dir + "/mnist_" + py + ".pkl"
 
 train_num = 60000
 test_num = 10000

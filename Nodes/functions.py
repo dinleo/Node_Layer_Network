@@ -1,4 +1,9 @@
-import cupy as np
+try:
+    import cupy as np
+except ImportError:
+    import numpy as np
+
+
 def softmax(x):
     if x.ndim == 2:
         x = x.T

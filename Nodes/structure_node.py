@@ -1,4 +1,8 @@
-import cupy as np
+try:
+    import cupy as np
+except ImportError:
+    import numpy as np
+
 
 class Reshape:
     def __init__(self, x_node, shape):

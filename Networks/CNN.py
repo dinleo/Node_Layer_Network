@@ -12,46 +12,51 @@ class CNN:
     기본설정:
         Batch Norm 사용 안 함
         DropOut 사용 안 함
+        fn = 64
     모델종류:
-        CVD, VGG11, VGG16
-    CVD:
-        1 conv - batch - relu -
-        2 conv - batch - relu - pooling
-        3 conv - batch - relu -
-        4 conv - batch - relu - pooling
-        5 conv - batch - relu -
-        6 conv - batch - relu - pooling
-        7 affine - relu - dropout
-        8 affine - softmax
+        CNN3, CNN8, VGG11, VGG16
+    CNN3: fn=fn//2
+        1 conv(fn) - batch - relu - pooling
+        2 affine(100) - relu - dropout
+        3 affine(10) - softmax
+    CNN8: fn=fn//4
+        1 conv(fn) - batch - relu -
+        2 conv(fn) - batch - relu - pooling
+        3 conv(2*fn) - batch - relu -
+        4 conv(2*fn) - batch - relu - pooling
+        5 conv(4*fn) - batch - relu -
+        6 conv(4*fn) - batch - relu - pooling
+        7 affine50 - relu - dropout
+        8 affine10 - softmax
     VGG11:
-        1 conv - batch - relu - pooling
-        2 conv - batch - relu - pooling
-        3 conv - batch - relu -
-        4 conv - batch - relu - pooling
-        5 conv - batch - relu -
-        6 conv - batch - relu - pooling
-        7 conv - batch - relu -
-        8 conv - batch - relu - pooling
-        9 affine - relu - dropout
-        10 affine - relu - dropout
-        11 affine - softmax
+        1 conv(fn)- batch - relu - pooling
+        2 conv(2*fn) - batch - relu - pooling
+        3 conv(4*fn) - batch - relu -
+        4 conv(4*fn) - batch - relu - pooling
+        5 conv(8*fn) - batch - relu -
+        6 conv(8*fn) - batch - relu - pooling
+        7 conv(8*fn) - batch - relu -
+        8 conv(8*fn) - batch - relu - pooling
+        9 affine(fn*fn) - relu - dropout
+        10 affine(4*fn) - relu - dropout
+        11 affine(10) - softmax
     VGG16:
-        1 conv - batch - relu -
-        2 conv - batch - relu - pooling
-        3 conv - batch - relu -
-        4 conv - batch - relu - pooling
-        5 conv - batch - relu -
-        6 conv - batch - relu -
-        7 conv - batch - relu - pooling
-        8 conv - batch - relu -
-        9 conv - batch - relu -
-        10 conv - batch - relu - pooling
-        11 conv - batch - relu -
-        12 conv - batch - relu -
-        13 conv - batch - relu - pooling
-        14 affine - relu - dropout
-        15 affine - relu - dropout
-        16 affine - softmax
+        1 conv(fn) - batch - relu -
+        2 conv(fn) - batch - relu - pooling
+        3 conv(2*fn) - batch - relu -
+        4 conv(2*fn) - batch - relu - pooling
+        5 conv(4*fn) - batch - relu -
+        6 conv(4*fn) - batch - relu -
+        7 conv(4*fn) - batch - relu - pooling
+        8 conv(8*fn) - batch - relu -
+        9 conv(8*fn) - batch - relu -
+        10 conv(8*fn) - batch - relu - pooling
+        11 conv(8*fn) - batch - relu -
+        12 conv(8*fn) - batch - relu -
+        13 conv(8*fn) - batch - relu - pooling
+        14 affine(fn*fn) - relu - dropout
+        15 affine(4*fn) - relu - dropout
+        16 affine(10)- softmax
     """
 
     def __init__(self, input_dim=(1, 28, 28), output_size=10, dropout_ratio=0, model='VGG16', init_fn=64, act='relu',
@@ -59,7 +64,17 @@ class CNN:
                  back_eta=True):
         # 가중치 초기화===========
         param_size = []
-        if model == 'CVD':
+        if model == 'CNN3':
+            init_fn = init_fn//2
+            param_size = [
+                {'filter_num': init_fn, 'filter_size': 5, 'pad': 0, 'stride': 1},  # 32, 28, 28
+                {'pooling': 2, 'stride': 2},  # 16, 14, 14
+                {'flatten': True},  # pre_channel_num 용. 실제 Flatten 은 Affine 에 구현 되어있음
+                # dense
+                {'unit_num': 100},
+                {'unit_num': output_size}
+            ]
+        if model == 'CNN8':
             init_fn = init_fn//4
             param_size = [
                 {'filter_num': init_fn, 'filter_size': 3, 'pad': 1, 'stride': 1},  # 16, 28, 28
