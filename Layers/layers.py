@@ -95,10 +95,10 @@ class CrossEntropy:
         self.dx = None
         self.get_t = GetValue(None)
 
-        self.mul_node = Mul(self.get_t, self.get_x)
+        self.log_node = Log(self.get_x, 1e-7)
+        self.mul_node = Mul(self.get_t, self.log_node)
         self.sum_node = Sum(self.mul_node, 1)
-        self.log_node = Log(self.sum_node, 1e-7)
-        self.neg_node = MulConst(self.log_node, -1)
+        self.neg_node = MulConst(self.sum_node, -1)
         self.last_node = Mean(self.neg_node, 0)
 
     def forward(self, x, t):
@@ -272,8 +272,10 @@ class BatchNormalization(Layer):
         self.rep_node2 = Repeat(self.recip_node, axis=0, r=None)
 
         self.xn_node = Mul(self.xc_node, self.rep_node2)
-        self.r_node = Repeat(self.get_r, axis=0, r=None)
-        self.b_node = Repeat(self.get_b, axis=0, r=None)
+        self.r_flt_node = Reshape(self.get_r, [-1])
+        self.b_flt_node = Reshape(self.get_b, [-1])
+        self.r_node = Repeat(self.r_flt_node, axis=0, r=None)
+        self.b_node = Repeat(self.b_flt_node, axis=0, r=None)
         self.r_xn_node = Mul(self.xn_node, self.r_node)
         self.last_node = Add(self.r_xn_node, self.b_node)
 

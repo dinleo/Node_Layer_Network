@@ -1,4 +1,4 @@
-import numpy as np
+import cupy as np
 
 class Reshape:
     def __init__(self, x_node, shape):
@@ -46,8 +46,8 @@ class Transpose:
         return y
 
     def backward(self, y):
-        r_shape = np.argsort(self.shape)
-        dx = y.transpose(r_shape)
+        r_shape = np.argsort(np.array(self.shape)).tolist()
+        dx = y.transpose(*r_shape)
 
         self.x_node.backward(dx)
 

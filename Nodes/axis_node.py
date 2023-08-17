@@ -1,4 +1,4 @@
-import numpy as np
+import cupy as np
 
 
 class Sum:
@@ -58,8 +58,12 @@ class Mean:
         return y
 
     def backward(self, y):
-        dx = np.expand_dims(y, axis=self.axis)
-        dx = np.repeat(dx, self.r, axis=self.axis) / self.r
+        if np.isscalar(y):
+            dx = np.array([y] * self.r)
+            dx = dx / self.r
+        else:
+            dx = np.expand_dims(y, axis=self.axis)
+            dx = np.repeat(dx, self.r, axis=self.axis) / self.r
         # print(self.name + " backward:\n", dx)
         self.x_node.backward(dx)
 
@@ -128,7 +132,14 @@ class Max:
             dx[self.mask] = y
         else:
             n_i = np.indices(self.o_shape)
-            mask = np.insert(n_i, self.axis, self.mask, axis=0)
+            mask = []
+            idx = 0
+            for i in range(n_i.shape[0] + 1):
+                if self.axis == i:
+                    mask.append(self.mask)
+                else:
+                    mask.append(n_i[idx])
+                    idx += 1
             dx[tuple(mask)] = y
         # print("Max backward:\n", dx)
         self.x_node.backward(dx)
