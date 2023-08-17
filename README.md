@@ -9,7 +9,7 @@
 
 ### 참고
 - 딥러닝 학습 블로그
-    - [딥러닝](https://www.notion.so/b4ad787c62b949b99d3a5b3f2fb4e23b?pvs=21)
+    - https://leo-dev.notion.site/b4ad787c62b949b99d3a5b3f2fb4e23b?v=7c6df0ad0b4d40c9b43ac5654dbb15cc&pvs=4
 - 교재코드
     - https://github.com/WegraLee/deep-learning-from-scratch
     - '밑바닥부터 시작하는 딥러닝' 교재를 참고해 구현 했습니다.
