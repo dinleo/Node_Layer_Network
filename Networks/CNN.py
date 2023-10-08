@@ -60,8 +60,7 @@ class CNN:
     """
 
     def __init__(self, input_dim=(1, 28, 28), output_size=10, dropout_ratio=0, model='VGG16', init_fn=64, act='relu',
-                 use_batchnorm=False,
-                 back_eta=True):
+                 use_batchnorm=False, back_eta=True):
         # 가중치 초기화===========
         param_size = []
         if model == 'CNN3':
